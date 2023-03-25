@@ -1,11 +1,52 @@
 .item-app {
-  display: grid;
-  grid-template-columns: $gtc;
-  grid-template-rows: 50px 60px 1fr;
-  min-height: 88.8vh;
-  gap: 15px;
+  // display: grid;
+  // grid-template-columns: $gtc;
+  // grid-template-rows: 0.2fr 1fr;
+  height: calc(100vh - 150px);
+  // gap: 15px;
   text-align: center;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+
+  // align-items: center;
+
+  .user-msg {
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .replay-logo {
+      height: 20px;
+    }
+
+    .choose-player {
+      display: flex;
+      width: 150px;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+
+    button {
+      border-radius: 50%;
+      font-size: 15px;
+      background-color: rgb(95, 64, 117);
+      border: 1px solid black;
+      height: 30px;
+      width: 30px;
+      transition: 0.2s all;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &:hover {
+        background-color: rgb(130, 93, 130);
+      }
+    }
+  }
 
   .sec-nav-container {
     display: flex;

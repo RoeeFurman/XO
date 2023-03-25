@@ -1,10 +1,8 @@
 <template>
-  <section>
-    {{ item }}
-    <div v-if="item.isX" @click="play(item)">X</div>
-    <div v-else-if="item.isO" @click="play(item)">O</div>
-    <div v-else @click="play(item)">-</div>
-    <!-- <h3>{{ item.isY }}</h3> -->
+  <section class="item-preview">
+    <div class="box" v-if="item.isX" @click="play(item)">X</div>
+    <div class="box" v-else-if="item.isO" @click="play(item)">O</div>
+    <div class="box" v-else @click="play(item)">-</div>
   </section>
 </template>
 
@@ -20,12 +18,20 @@ export default {
     };
   },
   components: {},
-  computed: {},
+  computed: {
+    currPlayer() {
+      return this.$store.getters.currPlayer;
+    },
+  },
   methods: {
     play(item) {
-      console.log(item);
-      // item.isX = !item.isX;
-      // item.isY = !item.isY;
+      if (!this.currPlayer) {
+        this.$store.commit({
+          type: "setVictoryMsg",
+          msg: "Choose player",
+        });
+        return;
+      }
       this.$emit("playTurn", item);
     },
     openPreviewLine() {

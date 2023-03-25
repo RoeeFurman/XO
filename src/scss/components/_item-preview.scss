@@ -1,1 +1,13 @@
-.item-preview {}
+.item-preview {
+    .box {
+        height: 100%;
+        border: 1px rgb(107, 107, 107) solid;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 30px;
+        border-radius: 10px;
+        background-color: rgb(45, 1, 45);
+
+    }
+}

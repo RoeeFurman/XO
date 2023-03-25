@@ -5,11 +5,15 @@ export default {
         items: null,
         filterBy: null,
         currPlayer: null,
-        victoryMsg: 'game on',
+        victoryMsg: 'Choose player',
+        gameOver: false,
     },
     getters: {
         items(state) {
             return state.items
+        },
+        gameOver(state) {
+            return state.gameOver
         },
         currPlayer(state) {
             return state.currPlayer
@@ -20,27 +24,28 @@ export default {
     },
     mutations: {
         setItems(state, { items }) {
+            // console.log(items, 'set items')
             state.items = items
         },
         setStartingPlayer(state, { value }) {
+            state.victoryMsg = '';
             state.currPlayer = value;
         },
         setVictoryMsg(state, { msg }) {
             state.victoryMsg = msg;
         },
+        setGameOver(state, { value }) {
+            state.gameOver = value;
+        },
         removeItem(state, { id }) {
             const idx = state.items.findIndex((item) => item._id === id)
             state.items.splice(idx, 1)
         },
+
         saveItem(state, { newItem }) {
-            // console.log(newItem, 'itemmm')
             const idx = state.items.findIndex((currItem) => currItem._id === newItem._id)
-            // console.log(state.items[idx], 'before splice')
             if (idx !== -1) state.items[idx] = { ...newItem }
-            // state.items.splice(idx, 1, newItem)
-            // console.log(state.items[idx], 'after')
-            console.log(state.items)
-            // else state.items.push(item)
+            // console.log(state.items)
         },
         setFilter(state, { filterBy }) {
             state.filterBy = filterBy;
@@ -56,6 +61,20 @@ export default {
                 console.log('loadItems err', err);
             }
         },
+        async restartGame({ dispatch, commit, state }) {
+            try {
+                let freshItems = await itemService.restart()
+                // console.log(freshItems, 'fresh')
+                await dispatch({ type: 'loadItems' })
+                commit({ type: 'setItems', items: freshItems })
+                commit({ type: 'setGameOver', value: false })
+                commit({ type: 'setVictoryMsg', msg: 'Choose player' })
+                commit({ type: 'setStartingPlayer', value: '' })
+
+            } catch (err) {
+                console.log(err, 'Failed to restart game')
+            }
+        },
         async removeItem({ commit }, { id }) {
             try {
                 const item = await itemService.remove(id)
@@ -65,36 +84,23 @@ export default {
                 console.log('removeItem err', err);
             }
         },
-        // async saveItem({ commit }, { item }) {
-        //     try {
-        //         const getItem = await itemService.save(item)
-        //         // console.log(getItem, 'get')
-        //         commit({ type: 'saveItem', newItem: getItem })
-        //         newI
-        //     } catch (err) {
-        //         console.log('saveItem err', err);
-        //         newI
-        //     }
-        // },
         async playTurn({ commit, state }, { item }) {
             try {
+                if (state.gameOver) return
+                if (item.isX || item.isO) return
                 const getItem = await itemService.save(item, state.currPlayer)
-                console.log(getItem, 'get')
                 commit({ type: 'saveItem', newItem: getItem })
-                let value = state.currPlayer === 'x' ? 'o' : 'x'
-                commit({ type: 'setStartingPlayer', value })
-                const msg = itemService.checkGameStatus()
-                commit({ type: 'setVictoryMsg', msg })
+                const gameOver = itemService.checkGameStatus()
+                if (gameOver) {
+                    commit({ type: 'setGameOver', value: true })
+                    commit({ type: 'setVictoryMsg', msg: gameOver === 'won' ? `${state.currPlayer.toUpperCase()} Won!!!` : 'Game over, Try again' })
+                } else {
+                    let value = state.currPlayer === 'x' ? 'o' : 'x'
+                    commit({ type: 'setStartingPlayer', value })
+                }
             } catch (err) {
                 console.log('saveItem err', err)
             }
-        },
-        filter({ commit, dispatch }, { filterBy }) {
-            // itemService.query(filterBy).then((items) => {
-            //   commit({type: 'setItems', items});
-            // });
-            commit({ type: 'setFilter', filterBy });
-            dispatch({ type: 'loadItems' });
         },
     },
 }

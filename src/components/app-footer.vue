@@ -1,9 +1,6 @@
 <template>
-  <footer class="main-header">
-    <div class="main-nav">
-      <div class="logo">Logo</div>
-      &copy; Copyrights Roee Furman
-    </div>
+  <footer class="main-footer">
+    <div class="main-nav">&copy; Copyrights Roee Furman</div>
   </footer>
 </template>
 

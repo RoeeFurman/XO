@@ -1,5 +1,5 @@
 <template>
-  <ul class="item-list">
+  <ul class="item-list" :style="{ width: calcWidth }" ref="table">
     <item-preview
       class="item-preview"
       @playTurn="playTurn"
@@ -22,6 +22,17 @@ export default {
   },
   components: {
     itemPreview,
+  },
+  computed: {
+    calcWidth() {
+      let height;
+      this.$nextTick(function () {
+        height = this.$refs.table.clientHeight;
+        console.log(height);
+      });
+
+      return `${height}px`;
+    },
   },
   methods: {
     playTurn(item) {

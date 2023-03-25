@@ -1,12 +1,20 @@
 <template>
   <section class="item-app">
-    <h1>XO</h1>
-    <div>
-      <button @click="setStartingPlayer('x')">X</button>
-      <button @click="setStartingPlayer('o')">O</button>
-      <h1>{{ currPlayer }}</h1>
-      <h1>{{ victoryMsg }}</h1>
+    <!-- <h1>XO</h1> -->
+    <div class="user-msg">
+      <div v-if="gameOver">
+        <button @click="restartGame">
+          <img src="@/assets/img/replay-2.svg" class="replay-logo" />
+        </button>
+      </div>
+      <div v-if="!currPlayer" class="choose-player">
+        <!-- <h1>Choose player:</h1> -->
+        <button @click="setStartingPlayer('x')">X</button>
+        <h1>?</h1>
+        <button @click="setStartingPlayer('o')">O</button>
+      </div>
     </div>
+    <!-- <h1 v-if="currPlayer && !gameOver">Curr Player: {{ currPlayer }}</h1> -->
 
     <!-- <h2>Mister Item</h2> -->
     <item-list v-if="items" :items="items" @playTurn="playTurn" />
@@ -30,21 +38,24 @@ export default {
     victoryMsg() {
       return this.$store.getters.victoryMsg;
     },
+    gameOver() {
+      return this.$store.getters.gameOver;
+    },
   },
   methods: {
     playTurn(item) {
-      // console.log("hello");
       this.$store.dispatch({ type: "playTurn", item });
     },
     setStartingPlayer(value) {
       this.$store.commit({ type: "setStartingPlayer", value });
     },
+    restartGame() {
+      this.$store.dispatch({ type: "restartGame" });
+    },
   },
   watch: {
     items: {
-      handler() {
-        console.log("changed");
-      },
+      handler() {},
       immediate: true,
     },
   },

@@ -4,4 +4,8 @@
     grid-auto-rows: 1fr 1fr 1fr;
     gap: 30px;
     grid-auto-flow: dense;
+    height: 100%;
+    padding: 10px;
+    width: 100%;
+    max-width: 550px;
 }
